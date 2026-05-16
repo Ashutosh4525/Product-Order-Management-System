@@ -5,10 +5,10 @@ npm install
 npm run dev
 
 ## ENV Variables
-MONGODB_URI=
-DB_NAME=
-PASS_SALT=
-TOKEN_KEY=
+    MONGODB_URI=
+    DB_NAME=
+    PASS_SALT=
+    TOKEN_KEY=
 
 ## Schema 
 # User 
