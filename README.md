@@ -1,8 +1,8 @@
 # Product-Order-Management-System
 
 ## Setup
-npm install
-npm run dev
+    npm install
+    npm run dev
 
 ## ENV Variables
     MONGODB_URI=
@@ -46,32 +46,32 @@ npm run dev
 # Order
     _id: ObjectId
     userId:refrence User
-    allOrder: embedded object constains Order_items
+    allOrder: embedded object contains Order_items
     total:Number,
     address:String
     status:enum String
 
 ## API List
 * User
-    * POST http://localhost:8000/api/users/create
-    * POST http://localhost:8000/api/users/login
+    * POST /api/users/create
+    * POST /api/users/login
 
 * Products
-    * POST http://localhost:8000/api/products/create
-    * GET http://localhost:8000/api/products/all
-    * PUT http://localhost:8000/api/products/update/:id
-    * PATCH http://localhost:8000/api/products/:id/disable
-    * PATCH http://localhost:8000/api/products/:id/enable
-    * DELETE http://localhost:8000/api/products/:id/delete
+    * POST /api/products/create
+    * GET /api/products/all
+    * PUT /api/products/update/:id
+    * PATCH /api/products/:id/disable
+    * PATCH /api/products/:id/enable
+    * DELETE /api/products/:id/delete
 
 * Cart 
-    * POST http://localhost:8000/api/cart/addtocart
-    * GET http://localhost:8000/api/cart/getcart
-    * PUT http://localhost:8000/api/cart/update
-    * DELETE http://localhost:8000/api/cart/removeitem/:productID
+    * POST /api/cart/addtocart
+    * GET /api/cart/getcart
+    * PUT /api/cart/update
+    * DELETE /api/cart/removeitem/:productID
 
 * Order
-    * POST http://localhost:8000/api/order/placeorder
-    * GET http://localhost:8000/api/order/allorder
-    * GET http://localhost:8000/api/order/:id
+    * POST /api/order/placeorder
+    * GET /api/order/allorder
+    * GET /api/order/:id
 
