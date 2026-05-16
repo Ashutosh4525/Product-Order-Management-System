@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
-const order_itemsSchema= new mongoose.Schema({
+export const order_itemsSchema= new mongoose.Schema({
     productId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Products"
+        ref:"Products",
+        required:true
     },
     price:{
         type:Number,
@@ -14,8 +15,6 @@ const order_itemsSchema= new mongoose.Schema({
         min:1,
         required:true
     },
-
-
 
 },{timestamps:true})
 

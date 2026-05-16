@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const cart_itemsSchema= new mongoose.Schema({
+export const cart_itemsSchema= new mongoose.Schema({
     productId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Products"
+        ref:"Products",
     },
     quantity:{
         type:Number,
@@ -13,6 +13,7 @@ const cart_itemsSchema= new mongoose.Schema({
     price:{
         type:Number,
         required:true,
+
     }
 },{timestamps:true})
 

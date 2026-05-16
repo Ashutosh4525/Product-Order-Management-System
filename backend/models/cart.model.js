@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Cart_items from "./cart_items.model.js";
+import {cart_itemsSchema} from "./cart_items.model.js";
 
 const cartschema= new mongoose.Schema({
     userId:{
@@ -7,7 +7,7 @@ const cartschema= new mongoose.Schema({
         ref:"User",
         required:true
     },
-    items:[Cart_items],
+    items:[cart_itemsSchema],
 
 },{timestamps:true})
 

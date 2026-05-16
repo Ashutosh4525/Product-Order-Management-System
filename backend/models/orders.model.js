@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Order_items from "./order_items.model.js";
+import {order_itemsSchema} from "./order_items.model.js";
 
 const orderSchema= new mongoose.Schema({
     userId:{
@@ -7,15 +7,20 @@ const orderSchema= new mongoose.Schema({
         ref:"User",
         required:true
     },
-    allOrder:[Order_items],
+    allOrder:[order_itemsSchema],
     total:{
         type:Number,
         required:true,
     },
     address:{
-        type:true,
+        type:String,
         required:true
     },
+    status:{
+        type:String,
+        enum:["PLACED","CANCELLED"],
+        default:"PLACED"
+    }
 },{timestamps:true})
 
 const Orders = mongoose.model("Order",orderSchema);

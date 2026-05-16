@@ -4,13 +4,13 @@ import { asyncHandler,ApiError } from "../middlewares/error.middleware.js";
 export const createProduct=asyncHandler(async (req,res) => {
     const {name,quantity,price,description}=req.body;
 
-    if(!name||!quantity||!price){
+    if(!name||!quantity||price===0){
         throw new ApiError("Input all values",400)
     }
-    // const product= await Products.find({name})
-    // if(product){
-    //     throw new ApiError("Product Already exists",403)
-    // }
+    const product= await Products.findOne({name})
+    if(product){
+        throw new ApiError("Product Already exists",403)
+    }
     const qunat=Number(quantity);
     const val=Number(price)
     const newProduct=await Products.create({name,quantity:qunat,price:val,description})
@@ -35,11 +35,12 @@ export const getAllProduct=asyncHandler(async (req,res) => {
         data:products
     })
 })
+
+
 export const updateProduct=asyncHandler(async (req,res) => {
     const {id}=req.params;
 
-
-    const product= await Products.findById({_id:id},{isDisabled:false})
+    const product= await Products.findOne({_id:id,isDisabled:false})
     if(!product){
         throw new ApiError("Could not find product or disabled product",401)
     }
@@ -49,8 +50,10 @@ export const updateProduct=asyncHandler(async (req,res) => {
     const val=Number(price)
     const updatedProduct = await Products.findByIdAndUpdate(id,
         {$set:{name,quantity:qunat,price:val,description}},
-        {new:true},
-        {runValidator:true}
+        {
+            new:true,
+            runValidators:true
+        }
     )
 
     return res.status(200).json({
@@ -63,14 +66,14 @@ export const updateProduct=asyncHandler(async (req,res) => {
 export const disableProduct=asyncHandler(async (req,res) => {
     const {id}=req.params;
 
-    const product= await Products.findById({_id:id},{isDisabled:false})
+    const product= await Products.findOne({_id:id,isDisabled:false})
     if(!product){
         throw new ApiError("Could not find product or disabled already product",401)
     }
 
     const disable= await Products.findByIdAndUpdate(id,
         {$set:{isDisabled:true}},
-        {new:true}
+        {new:true,runValidators:true}
     );
 
     return res.status(200).json({
@@ -83,7 +86,7 @@ export const disableProduct=asyncHandler(async (req,res) => {
 export const enableProduct=asyncHandler(async (req,res) => {
     const {id}=req.params;
 
-    const product= await Products.findById({_id:id},{isDisabled:true})
+    const product= await Products.findOne({_id:id,isDisabled:true})
     if(!product){
         throw new ApiError("Could not find product or disabled already product",401)
     }
@@ -103,7 +106,7 @@ export const enableProduct=asyncHandler(async (req,res) => {
 export const deleteProduct = asyncHandler(async (req,res) => {
     const {id} =req.params;
 
-    const product=await Products.find({_id:id});
+    const product=await Products.findById(id);
 
     await Products.deleteOne(product);
 

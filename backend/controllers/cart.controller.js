@@ -1,17 +1,126 @@
-import { ApiError, asyncHandler } from "../middlewares/error.middleware.js";
 import Cart from "../models/cart.model.js";
 import Products from "../models/products.model.js";
+import {asyncHandler,ApiError} from "../middlewares/error.middleware.js";
 
+export const addToCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    console.log(userId);
+    
+    const { productId, quantity } = req.body;
 
-export const addToCart=asyncHandler(async (req,res) => {
-    const {id}=req.user;
+    const product = await Products.findOne({_id: productId,isDisabled: false});
 
-    const {productId,quantity}=req.body;
-
-    if (!productId||quantity<=0) {
-        throw new ApiError("Inavlid Item",403)
+    if (!product) {
+        throw new ApiError("Product not found",404);
     }
 
-    const cart= await Cart.findById({})
+    if (product.quantity < quantity) {
+        throw new ApiError("Insufficient inventory",400);
+    }
+
+    let cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+        cart = await Cart.create({
+            userId,
+            items: []
+        });
+    }
+
+    const existingItem = cart.items.find(item =>item.productId.toString() === productId );
+
+    if (existingItem) {
+        existingItem.quantity += quantity;
+    } else {
+        cart.items.push({
+            productId,
+            quantity,
+            price: product.price
+        });
+    }
+
+    await cart.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Added to cart",
+        data: cart
+    });
+
+});
+
+export const getCart = asyncHandler(async (req, res) => {
+
+    const userId = req.user.id;
+
+    const cart = await Cart.findOne({ userId })
+        .populate("items.productId");
+
+    if (!cart) {
+        return res.status(200).json({
+            success: true,
+            data: []
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        data: cart
+    });
+
+});
+
+export const updateCartItem = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { productId, quantity } = req.body;
+
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+        throw new ApiError("Cart not found", 404);
+    }
+
+    const item = cart.items.find(item =>item.productId.toString() === productId);
+
+    if (!item) {
+        throw new ApiError("Item not found in cart",404);
+    }
+
+    item.quantity = quantity;
+
+    await cart.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Cart updated",
+        data: cart
+    });
+
+});
+
+export const removeCartItem = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { productId } = req.params;
+
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+        throw new ApiError("Cart not found", 404);
+    }
+
+    const initialLength = cart.items.length;
+    cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+
+    if (cart.items.length === initialLength) {
+        throw new ApiError("Item not found in cart", 404);
+    }
+
     
-})
+    await cart.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Item removed"
+    });
+
+});

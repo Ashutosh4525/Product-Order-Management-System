@@ -41,11 +41,26 @@ export const login=asyncHandler(async (req,res) => {
         throw new ApiError("Incorrect Password",401);
     }
 
-    const token = jwt.sign({id:user._id,role:user.role},process.env.TOKEN_KEY,{expiresIn:"2d"})
+    const token = jwt.sign({id:user._id,roles:user.roles},process.env.TOKEN_KEY,{expiresIn:"2d"})
 
     return res.status(200).json({
         success:true,
         message:"logged-in",
         token
     })
+})
+
+export const getAll=asyncHandler(async (req,res) => {
+    const users = await Users.find();
+
+    if (users.length===0) {
+        throw new ApiError("Empty Users",401)
+    }
+
+    return res.status(200).json({
+        success:true,
+        message:"All user fetched",
+        data:users
+    })
+
 })

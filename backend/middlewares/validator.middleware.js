@@ -3,10 +3,13 @@ import { ApiError } from "./error.middleware.js";
 export const valdidate=(req,res,next)=>{
     const error=validationResult(req)
     if (error.isEmpty()) {
-        return next();
+        const message = errors.array()[0].msg;
+
+        return next(
+            new ApiError(message, 400)
+        );
+
     }
 
-    return res.status(400).json({
-        error:error.array()
-    })
+    next();
 }
