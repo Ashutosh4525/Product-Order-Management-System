@@ -7,6 +7,8 @@ import userRouter from "./routes/user.route.js";
 import productRouter from "./routes/product.route.js";
 import orderRouter from "./routes/order.route.js";
 import cartRouter from "./routes/cart.route.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
 const PORT = 8000;
 const app = express();
 
@@ -15,6 +17,11 @@ app.use(express.json());
 app.get('/',(req,res)=>{
     return res.send("Server Working")
 })
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec)
+);
 app.use("/api/users",userRouter);
 app.use("/api/products",productRouter);
 app.use("/api/cart",cartRouter);

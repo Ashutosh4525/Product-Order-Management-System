@@ -1,14 +1,12 @@
 import { validationResult } from "express-validator";
 import { ApiError } from "./error.middleware.js";
 export const valdidate=(req,res,next)=>{
-    const error=validationResult(req)
-    if (error.isEmpty()) {
-        const message = errors.array()[0].msg;
+    const errors = validationResult(req);
 
+    if (!errors.isEmpty()) {
         return next(
-            new ApiError(message, 400)
+            new ApiError(errors.array()[0].msg,400)
         );
-
     }
 
     next();

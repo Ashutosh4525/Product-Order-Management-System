@@ -14,10 +14,6 @@ export const addToCart = asyncHandler(async (req, res) => {
         throw new ApiError("Product not found",404);
     }
 
-    if (product.quantity < quantity) {
-        throw new ApiError("Insufficient inventory",400);
-    }
-
     let cart = await Cart.findOne({ userId });
 
     if (!cart) {
@@ -30,21 +26,30 @@ export const addToCart = asyncHandler(async (req, res) => {
     const existingItem = cart.items.find(item =>item.productId.toString() === productId );
 
     if (existingItem) {
-        existingItem.quantity += quantity;
+        const newQuantity = existingItem.quantity + quantity;
+        if (newQuantity > product.quantity) {
+            throw new ApiError("Insufficient inventory",400);
+        }
+        existingItem.quantity = newQuantity;
     } else {
+        if (quantity > product.quantity) {
+            throw new ApiError("Insufficient inventory",400);
+        }
         cart.items.push({
             productId,
             quantity,
-            price: product.price
+            price: product.price * quantity
         });
     }
 
+    const total = cart.items.reduce((acc, item) =>acc + (item.price * item.quantity),0);
     await cart.save();
 
     return res.status(200).json({
         success: true,
         message: "Added to cart",
-        data: cart
+        data: cart,
+        total
     });
 
 });
@@ -62,10 +67,26 @@ export const getCart = asyncHandler(async (req, res) => {
             data: []
         });
     }
+    const items = cart.items.map(item => ({
+
+        ...item.toObject(),
+
+        subtotal:
+            item.price * item.quantity
+
+    }));
+
+    const total = items.reduce(
+        (acc, item) =>
+            acc + item.subtotal,
+        0
+    );
+
 
     return res.status(200).json({
         success: true,
-        data: cart
+        data: cart,
+        total
     });
 
 });

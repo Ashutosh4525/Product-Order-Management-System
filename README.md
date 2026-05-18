@@ -75,3 +75,6 @@
     * GET /api/order/allorder
     * GET /api/order/:id
 
+## Swagger Docs
+    
+    http://localhost:8000/api-docs
