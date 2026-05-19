@@ -19,10 +19,11 @@ export const createUser=asyncHandler(async(req,res)=>{
 
     const newUser=await Users.create({name,password:hashedPass,email,address})
 
+    const createdUser = await Users.findById(newUser._id).select("-password")
     return res.status(201).json({
         success:true,
         message:"User Created",
-        data:newUser
+        data:createdUser
     })
 })
 
@@ -51,7 +52,7 @@ export const login=asyncHandler(async (req,res) => {
 })
 
 export const getAll=asyncHandler(async (req,res) => {
-    const users = await Users.find();
+    const users = await Users.find().select("-password");
 
     if (users.length===0) {
         throw new ApiError("Empty Users",401)
