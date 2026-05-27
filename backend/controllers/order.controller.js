@@ -30,7 +30,18 @@ export const placeOrder = asyncHandler(async (req, res) => {
             }
 
             if (product.quantity < item.quantity) {
-                throw new ApiError(`${product.name} insufficient inventory`,400);
+                // throw new ApiError(`${product.name} insufficient inventory`,400);
+                // for( const item of cart.items){
+                    await Products.findByIdAndUpdate(
+                        item.productId,
+                        {
+                            $inc:{
+                                quantity:-product.quantity
+                            }
+                        }
+                    )
+                // }
+                
             }
 
             total += item.price * item.quantity;
@@ -48,6 +59,20 @@ export const placeOrder = asyncHandler(async (req, res) => {
             );
         }
 
+        
+        // for (const item of cart.items){
+        //     if (product.quantity < item.quantity) {
+        //        await Products.findByIdAndUpdate(
+        //                 productId,
+        //                 {
+        //                     $inc:{
+        //                         quantity:-product.quantity
+        //                     }
+        //                 },
+        //                 {session}
+        //             ) 
+        //     }
+        // }
         const order = await Orders.create([{
             userId,
             allOrder: cart.items,

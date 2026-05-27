@@ -91,6 +91,10 @@ export const enableProduct=asyncHandler(async (req,res) => {
         throw new ApiError("Could not find product or disabled already product",401)
     }
 
+    if (product.quantity===0) {
+        throw new ApiError("could not enable product", 409);  
+    }
+
     const disable= await Products.findByIdAndUpdate(id,
         {$set:{isDisabled:false}},
         {new:true}

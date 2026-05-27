@@ -26,15 +26,16 @@ export const addToCart = asyncHandler(async (req, res) => {
     const existingItem = cart.items.find(item =>item.productId.toString() === productId );
 
     if (existingItem) {
-        const newQuantity = existingItem.quantity + quantity;
+        let newQuantity = existingItem.quantity + quantity;
         if (newQuantity > product.quantity) {
-            throw new ApiError("Insufficient inventory",400);
+            // throw new ApiError("Insufficient inventory",400);
+            newQuantity=product.quantity
         }
         existingItem.quantity = newQuantity;
     } else {
-        if (quantity > product.quantity) {
-            throw new ApiError("Insufficient inventory",400);
-        }
+        // if (quantity > product.quantity) {
+        //     throw new ApiError("Insufficient inventory",400);
+        // }
         cart.items.push({
             productId,
             quantity,
