@@ -109,6 +109,8 @@ productRouter.put("/update/:id",authware,isAdmin,updateProduct);
  *     responses:
  *       200:
  *         description: Product disabled
+ *       404:
+ *         descripttion: Product not found
  */
 productRouter.patch("/:id/disable",authware,isAdmin,disableProduct);
 
@@ -130,6 +132,8 @@ productRouter.patch("/:id/disable",authware,isAdmin,disableProduct);
  *     responses:
  *       200:
  *         description: Product enabled
+ *       401:
+ *         description: Product not found
  */
 productRouter.patch("/:id/enable",authware,isAdmin,enableProduct);
 

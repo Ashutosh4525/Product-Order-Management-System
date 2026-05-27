@@ -28,17 +28,17 @@ const options = {
                 }
 
             },
-            schemas: {
+            // schemas: {
 
-                Product:{
-                    type:"object",
-                    properties:{
-                        name:{ type:"string" },
-                        quantity:{ type:"number" },
-                        price:{ type:"number" }
-                    }
-                }
-            }
+            //     Product:{
+            //         type:"object",
+            //         properties:{
+            //             name:{ type:"string" },
+            //             quantity:{ type:"number" },
+            //             price:{ type:"number" }
+            //         }
+            //     }
+            // }
         },
         security: [
             {
